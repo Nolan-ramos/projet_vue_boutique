@@ -30,6 +30,7 @@ export default {
   min-height: 100vh;
   color:#fff;
   caret-color: #fff;
+  line-height: 1.5;
   a{
     color:#fff;
     transition: ease-in-out 0.3s;
@@ -71,6 +72,7 @@ export default {
         border: 0px;
         padding:20px 25px;
         transition: ease-in-out 0.3s;
+        border: solid 1px var(--main-color);
         &:hover{
             background: var(--main-color);
         }
@@ -83,6 +85,7 @@ export default {
         margin-top: 25px;
         background: var(--dark);
         padding:20px 25px;
+        border: solid 1px var(--main-color);
         &:hover{
             background: var(--main-color);
             color:#fff !important;

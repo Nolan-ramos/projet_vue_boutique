@@ -6,7 +6,7 @@
         <nav class="container_nav--nav"> 
             <router-link to="/">Accueil</router-link>
             <router-link to="/produits">Produits</router-link>
-            <router-link to="/page-admin" v-if="user_info.admin == true">Page admin</router-link>
+            <router-link to="/page-admin" v-if="user_info && user_info.admin == true">Page admin</router-link>
         </nav>
         <div class="container_nav--button">
             <i class="uil uil-search"></i>
@@ -17,7 +17,7 @@
             <router-link to="/favoris">Mes favoris</router-link>
             <router-link to="/panier">Panier</router-link>
             <router-link to="/commandes">Mes commandes</router-link>
-            <router-link :to="'/user-infos/'+user_info.id">Mes informations</router-link>
+            <router-link to="/user-infos">Mes informations</router-link>
             <span v-on:click="logout" v-if="user_info">Se déconnecter</span>
         </div>
     </div>

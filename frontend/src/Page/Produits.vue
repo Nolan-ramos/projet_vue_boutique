@@ -3,7 +3,7 @@
         <Nav/>
         <div class="container_produits--all_produits">
             <div v-for="produit in produits" :key="produit.id" class="produit">
-                <div class="produit--update_delete" v-if="user_info.admin == true">
+                <div class="produit--update_delete" v-if="user_info && user_info.admin == true">
                     <router-link :to="'/update-produit/'+produit.id"><i class="uil uil-edit"></i></router-link>
                     <span v-on:click="DeleteProduct()"><i class="uil uil-times-square"></i></span>
                 </div>
@@ -65,8 +65,8 @@
                 margin-top: 35px;
                 &--update_delete{
                     position:absolute;
-                    top:11.5px;
-                    right:0;
+                    top:7.5px;
+                    left:0;
                     z-index: 1;
                     a,
                     span{

@@ -51,7 +51,7 @@
                 document.querySelector("#message_form").style.display = display
             },
             async updateUserInfos(){
-                let result = await axios.put('http://localhost:3000/users/'+this.$route.params.id,{
+                let result = await axios.put('http://localhost:3000/users/'+this.user_infos.id,{
                     email:this.user_infos.email,
                     password:this.user_infos.password,
                     prenom:this.user_infos.prenom,
@@ -71,13 +71,12 @@
             }
         },
         async mounted(){
-            let user = localStorage.getItem('user-info');
+            let user = JSON.parse(localStorage.getItem('user-info'));
             if(!user){
                 this.$router.push({name:'Login'})
             }
-            const result = await axios.get('http://localhost:3000/users/'+this.$route.params.id)
+            const result = await axios.get('http://localhost:3000/users/'+user.id)
             this.user_infos=result.data
-            console.log(this.user_infos)
         }
     }
     

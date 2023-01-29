@@ -21,7 +21,7 @@ const routes=[
     {name:'Login', component:Login, path:'/login'},
     {name:'Signup', component:Signup, path:'/signup'},
     {name:'PageAdmin', component:PageAdmin, path:'/page-admin'},
-    {name:'UserInfos', component:UserInfos, path:'/user-infos/:id'},
+    {name:'UserInfos', component:UserInfos, path:'/user-infos'},
     {name:'InfosProduit', component:InfosProduit, path:'/infos-produit/:id'},
     {name:'UpdateProduit', component:UpdateProduit,  path:'/update-produit/:id'}
 ]
