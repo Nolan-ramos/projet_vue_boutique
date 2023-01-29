@@ -48,7 +48,6 @@ export default {
     background: var(--very_dark);
     width:500px;
     padding:50px;
-    border-radius: 24px;
     h1{
         margin-bottom: 25px;
         font-size: 32px;
@@ -57,7 +56,6 @@ export default {
         border: 1px solid var(--light_dark);
         background: var(--dark);
         padding:20px;
-        border-radius: 8px;
         color:white;
         margin-bottom: 25px;
         width: 100%;
@@ -85,7 +83,6 @@ export default {
         margin-top: 25px;
         background: var(--dark);
         padding:20px 25px;
-        border-radius: 8px;
         &:hover{
             background: var(--main-color);
             color:#fff !important;

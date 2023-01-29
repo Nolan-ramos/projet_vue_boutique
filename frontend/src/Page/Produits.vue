@@ -3,8 +3,8 @@
         <Nav/>
         <div class="container_produits--all_produits">
             <div v-for="produit in produits" :key="produit.id" class="produit">
-                <div class="produit--update_delete">
-                    <router-link :to="'/update-produit/'+produit.id" v-if="user_info.admin == true"><i class="uil uil-edit"></i></router-link>
+                <div class="produit--update_delete" v-if="user_info.admin == true">
+                    <router-link :to="'/update-produit/'+produit.id"><i class="uil uil-edit"></i></router-link>
                     <span v-on:click="DeleteProduct()"><i class="uil uil-times-square"></i></span>
                 </div>
                 <router-link :to="{name: 'InfosProduit', params: {id: produit.id}}" class="produit--card">

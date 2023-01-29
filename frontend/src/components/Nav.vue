@@ -95,7 +95,6 @@
             z-index: 2;
             background: var(--very_dark);
             padding:50px;
-            border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0,0,0,.4),0 0px 4px rgba(0,0,0,.4) !important;
             a{
                 display: block;
