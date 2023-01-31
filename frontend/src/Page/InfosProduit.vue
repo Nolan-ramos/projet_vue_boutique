@@ -7,13 +7,10 @@
                 <span v-on:click="DeleteProduct()"><i class="uil uil-times-square"></i></span>
             </div>
             <div class="infos_produit--image">
-                <img id="infos_produit--image" :src="product_infos.image" alt="">
+                <img id="infos_produit--image" :src="product_img" alt="">
             </div>
             <div class="infos_produit--slide">
-                <img v-on:click="changeImg(product_infos.image)" :src="product_infos.image" alt="">
-                <img v-on:click="changeImg('https://images.asos-media.com/products/asos-design-trench-coat-en-imitation-cuir-ultra-oversize-marron/203644808-2?$n_640w$&wid=513&fit=constrain')" src="https://images.asos-media.com/products/asos-design-trench-coat-en-imitation-cuir-ultra-oversize-marron/203644808-2?$n_640w$&wid=513&fit=constrain" alt="">
-                <img v-on:click="changeImg('https://images.asos-media.com/products/asos-design-trench-coat-en-imitation-cuir-ultra-oversize-marron/203644808-3?$n_640w$&wid=513&fit=constrain')" src="https://images.asos-media.com/products/asos-design-trench-coat-en-imitation-cuir-ultra-oversize-marron/203644808-3?$n_640w$&wid=513&fit=constrain" alt="">
-                <img v-on:click="changeImg('https://images.asos-media.com/products/asos-design-trench-coat-en-imitation-cuir-ultra-oversize-marron/203644808-4?$n_640w$&wid=513&fit=constrain')" src="https://images.asos-media.com/products/asos-design-trench-coat-en-imitation-cuir-ultra-oversize-marron/203644808-4?$n_640w$&wid=513&fit=constrain" alt="">
+                <img v-for="image in product_infos.image" :key="image" :src="image" alt="" v-on:click="changeImg(image)" >
             </div>
             <div class="infos_produit--all">
                 <div class="infos_produit--all--utils">
@@ -25,41 +22,35 @@
                     </div>
                     <div class="infos_produit--all--utils--prix">{{ product_infos.prix }}€</div>
                     <div class="infos_produit--all--utils--taille">
-                        <div>XSS</div>
-                        <div>XS</div>
-                        <div>S</div>
-                        <div>M</div>
-                        <div>L</div>
-                        <div>XL</div>
-                        <div>XLL</div>
+                        <div v-on:click="choiceSize('XSS')" class="size_product">XSS</div>
+                        <div v-on:click="choiceSize('XS')" class="size_product">XS</div>
+                        <div v-on:click="choiceSize('S')" class="size_product">S</div>
+                        <div v-on:click="choiceSize('M')" class="size_product">M</div>
+                        <div v-on:click="choiceSize('L')" class="size_product">L</div>
+                        <div v-on:click="choiceSize('XL')" class="size_product">XL</div>
+                        <div v-on:click="choiceSize('XLL')" class="size_product">XLL</div>
                     </div>
+                    <span id="message_size">cc</span>
                 </div>
                 <div class="infos_produit--all--button">
-                    <button>Ajouter aux favoris <i class="uil uil-favorite"></i></button>
-                    <button>Ajouter au panier <i class="uil uil-shopping-bag"></i></button>
+                    <button id="add_favoris" v-on:click="addFavoris()"></button>
+                    <button v-on:click="addPanier()">Ajouter au panier <i class="uil uil-shopping-bag"></i></button>
                 </div>  
             </div>
             <div class="infos_produit--details">
                 <div class="infos_produit--details--important">
                     <span>Détail du produit</span>
                     <ul>
-                        <li>Il ne te reste plus qu'à l'enfiler avant de partir</li>
-                        <li>Col cranté</li>
-                        <li>Patte de boutonnage</li>
-                        <li>Ceinture à nouer</li>
-                        <li>Poches latérales</li>
-                        <li>Coupe ultra oversize</li>
+                        <li v-for="detail_important in product_infos.detail_important" :key="detail_important">{{ detail_important }}</li>
                     </ul>
                 </div>
-                <div class="infos_produit--details--taille">
+                <div class="infos_produit--details--taille_coupe">
                     <span>Taille et coupe</span>
-                    <p>Le mannequin mesure 184 cm (6'0½'')</p>
-                    <p>Le mannequin porte une taille M</p>
+                    <p v-for="taille_coupe in product_infos.taille_coupe" :key="taille_coupe">{{ taille_coupe }}</p>
                 </div>
                 <div class="infos_produit--details--matiere_entretien">
                     <span>Matière et entretien</span>
-                    <p>Lavage en machine conformément aux instructions figurant sur l'étiquette d'entretien</p>
-                    <p>Revêtement : 100 % polyuréthane. Doublure : 100 % polyester. Tissu de base : 51 % polyester, 49 % viscose.</p>
+                    <p v-for="matiere_entretien in product_infos.matiere_entretien" :key="matiere_entretien">{{ matiere_entretien }}</p>
                 </div>
             </div>
         </div>
@@ -77,14 +68,107 @@
         data(){
             return{
                 user_info:'',
-                product_infos:{
-                    
-                }
+                product_infos:[],
+                product_img:'',
+                choice_size:'',
+                already_fav: false,
             }
         },
         methods:{
+            async addFavoris(){
+                if(!this.user_info){
+                    this.$router.push({name:'Login'})
+                }
+                else{
+                    if(this.already_fav == false){
+                        let result = await axios.post("http://localhost:3000/favoris",{
+                            id_user:this.user_info.id,
+                            id_produit:this.product_infos.id,
+                        });
+                        if(result.status==201){
+                            this.messageSize("Le produit a bien été ajouté aux favoris", "green", "block");
+                            this.already_fav = true;
+                            this.textFavButton();
+                        }
+                    }
+                    else{
+                        let favoris = await axios.get(`http://localhost:3000/favoris?id_user=${this.user_info.id}&id_produit=${this.product_infos.id}`)
+                        let result = await axios.delete('http://localhost:3000/favoris/'+favoris.data[0].id)
+                        console.log(result)
+                        if(result.status==200){
+                            this.messageSize("Le produit a bien été supprimé des favoris", "green", "block");
+                            this.already_fav = false;
+                            this.textFavButton();
+                        }
+                    }
+                }
+            },
+            async addPanier(){
+                if(!this.user_info){
+                    this.$router.push({name:'Login'})
+                }
+                else{
+                    if(this.choice_size === ''){
+                        this.messageSize("Vous n'avez pas chosis de taille", "red", "block");
+                    }
+                    else{
+                        let panier = await axios.get(`http://localhost:3000/panier?id_user=${this.user_info.id}&id_produit=${this.product_infos.id}&size=${this.choice_size}`)
+                        if(panier.data.length == 0){
+                            let result = await axios.post("http://localhost:3000/panier",{
+                                id_user:this.user_info.id,
+                                id_produit:this.product_infos.id,
+                                size:this.choice_size,
+                                nombre: 1,
+                            });
+                            if(result.status==201){
+                                this.messageSize("Le produit a bien été ajouté au panier", "green", "block");
+                            }
+                        }
+                        else{
+                            let panier = await axios.get(`http://localhost:3000/panier?id_user=${this.user_info.id}&id_produit=${this.product_infos.id}&size=${this.choice_size}`)
+                            let result = await axios.put('http://localhost:3000/panier/'+panier.data[0].id,{
+                                id_user:this.user_info.id,
+                                id_produit:this.product_infos.id,
+                                size:this.choice_size,
+                                nombre: panier.data[0].nombre + 1
+                            });
+                            if(result.status==200){
+                                panier = await axios.get(`http://localhost:3000/panier?id_user=${this.user_info.id}&id_produit=${this.product_infos.id}&size=${this.choice_size}`)
+                                this.messageSize("Ce produit était déjà dans votre panier, vous en avez maintenant "+panier.data[0].nombre, "green", "block");
+                            }
+                        }
+                    }
+                }
+            },
+            messageSize(text,color,display){
+                document.querySelector("#message_size").innerHTML = text
+                document.querySelector("#message_size").style.color = color
+                document.querySelector("#message_size").style.display = display
+            },
             changeImg(src){
                 document.getElementById("infos_produit--image").src = src
+            },
+            choiceSize(size){
+                this.choice_size = size;
+                this.messageSize("Vous avez chosis la taille : "+this.choice_size, "green", "block")
+
+                const size_product = document.getElementsByClassName("size_product");
+                for(let i = 0; i < size_product.length; i++){
+                    size_product[i].classList.remove("size_product_main_color")
+                    size_product[i].classList.add("size_product_dark")
+                    if(size_product[i].innerHTML == size){
+                        size_product[i].classList.remove("size_product_dark")
+                        size_product[i].classList.add("size_product_main_color")
+                    }
+                }
+            },
+            textFavButton(){
+                if(this.already_fav == false){
+                    document.getElementById("add_favoris").innerHTML = 'Ajouter aux favoris <i class="uil uil-favorite"></i>'
+                }
+                else{
+                    document.getElementById("add_favoris").innerHTML = 'Supprimer des favoris <i class="uil uil-favorite"></i>'
+                }
             }
         },
         async mounted(){
@@ -92,6 +176,17 @@
 
             const result = await axios.get('http://localhost:3000/produits/'+this.$route.params.id)
             this.product_infos=result.data
+            this.product_img=this.product_infos.image[0]
+
+            let favoris = await axios.get(`http://localhost:3000/favoris?id_user=${this.user_info.id}&id_produit=${this.product_infos.id}`)
+            console.log(favoris)
+            if(favoris.data.length == 1){
+                this.already_fav = true
+            }
+            else{
+                this.already_fav = false
+            }
+            this.textFavButton()
         }
     }
     
@@ -127,18 +222,19 @@
             }
             &--image{
                 img{
-                    height:700px;
+                    width:400px;
+                    object-fit: cover;
                 }
             }
             .infos_produit--slide::-webkit-scrollbar{display: none;}
             &--slide{
-                height:700px;
-                width:200px;
+                width:100px;
                 overflow: scroll;
                 img{
-                    width:100%;
+                    width: 100%;
                     margin: 5px 0 0 5px;
                     transition: ease-in-out 0.3s;
+                    object-fit: cover;
                     cursor: pointer;
                     &:hover{
                         opacity: 0.7;
@@ -152,6 +248,7 @@
                 }
             }
             &--all{
+                width: calc(50% - 250px);
                 margin-left: 5px;
                 padding-left:50px;
                 &--utils{
@@ -178,6 +275,12 @@
                     &--taille{
                         font-size: 10px;
                         display: flex;
+                        .size_product_dark{
+                            background: var(--dark);
+                        }
+                        .size_product_main_color{
+                            background: var(--main-color);
+                        }
                         div{
                             width:40px;
                             height:40px;
@@ -196,8 +299,11 @@
                                 border-right: solid 2px var(--light_dark);
                             }
                         }
-                        
                     }
+                    #message_size{
+                        display: none;
+                        font-size: 16px;
+                    }  
                 }
                 &--button{
                     margin-top: 25px;
@@ -220,6 +326,7 @@
                 }
             }
             &--details{
+                width: calc(50% - 250px);
                 padding-left:50px;
                 div{
                     margin-top: 15px;
@@ -244,6 +351,20 @@
                     font-size: 18px;
                     margin-bottom: 15px;
                     display: block;
+                }
+            }
+        }
+    }
+    @media screen and (max-width: 1500px) {
+        .container_infos_produit{
+            .infos_produit{
+                &--image{
+                    img{
+                        height:500px;
+                    }
+                }
+                &--slide{
+                    height:500px;
                 }
             }
         }

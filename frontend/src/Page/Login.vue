@@ -39,7 +39,6 @@
                 }
                 else{
                     let result = await axios.get(`http://localhost:3000/users?email=${this.email}&password=${this.password}`)
-                    console.log(result.data.length)
                     if(result.status==200 && result.data.length == 1){
                         localStorage.setItem("user-info",JSON.stringify(result.data[0]))
                         this.$router.push({name:'Home'})
@@ -48,7 +47,6 @@
                         this.messageForm("Email ou mdp incorrect !","red","block")
                     }
                 }
-                
             }
         },
         mounted(){

@@ -7,8 +7,11 @@
                     <router-link :to="'/update-produit/'+produit.id"><i class="uil uil-edit"></i></router-link>
                     <span v-on:click="DeleteProduct()"><i class="uil uil-times-square"></i></span>
                 </div>
+                <div class="produit--add_fav">
+                    <span v-on:click="addFav()"><i class="uil uil-favorite"></i></span>
+                </div>
                 <router-link :to="{name: 'InfosProduit', params: {id: produit.id}}" class="produit--card">
-                    <img :src="produit.image" alt="">
+                    <img :src="produit.image[0]" alt="">
                     <div class="produit--card--infos">
                         <span class="produit--card--infos--name">{{ produit.name }}</span>
                         <span class="produit--card--infos--marque">{{ produit.marque }}</span>
@@ -35,6 +38,7 @@
             return{
                 produits:[],
                 user_info:'',
+                fav_list:[],
             }
         },
         methods:{
@@ -43,11 +47,18 @@
                 this.produits = result.data;
 
                 this.user_info = JSON.parse(localStorage.getItem('user-info'));
+            },
+            async favList(){
+                this.user_info = JSON.parse(localStorage.getItem('user-info'));
+                let result = await axios.get(`http://localhost:3000/favoris?id_user=${this.user_info.id}`)
+                for(let i = 0; i < result.data.length; i++){
+                    this.fav_list.push(result.data[i].id_produit)
+                }
             }
-            
         },
         async mounted(){
             this.loadData()
+            this.favList()
         }
     }
     
@@ -85,6 +96,25 @@
                     span{
                         background: red;
                         cursor: pointer;
+                    }
+                }
+                &--add_fav{
+                    position:absolute;
+                    top:7.5px;
+                    right:7.5px;
+                    z-index: 1;
+                    span{
+                        i{  
+                            // color: var(--main-color);
+                            font-size: 24px;
+                            line-height: 1;
+                        }
+                    }
+                    .add_fav_dark{
+                        color: var(--dark);
+                    }
+                    .add_fav_main_color{
+                        color: var(--main-color);
                     }
                 }
                 &:nth-child(5n){
@@ -145,6 +175,24 @@
                     }
                     &:hover{
                         color: white !important;
+                    }
+                }
+            }
+        }
+    }
+    @media screen and (max-width: 1500px) {
+        .container_produits{
+            &--all_produits{
+                .produit{
+                    width:calc(100%/4 - 26.3px);
+                    &:nth-child(5n){
+                        margin-right: 35px;
+                    }
+                    &:nth-child(4n){
+                        margin-right: 0;
+                    }
+                    &:nth-child(5){
+                        margin-top: 35px;
                     }
                 }
             }
