@@ -20,15 +20,18 @@
                         <div :style="{ background: product_infos.code_couleur}" class="infos_produit--all--utils--couleur--code"></div>
                         {{ product_infos.couleur }}
                     </div>
-                    <div class="infos_produit--all--utils--prix">{{ product_infos.prix }}€</div>
+                    <div class="infos_produit--all--utils--prix">
+                        <span v-if="!product_infos.promo">{{ product_infos.prix }}€</span>
+                        <span v-if="product_infos.promo" style="text-decoration:line-through;">{{ product_infos.prix }}€</span>
+                        <div v-if="product_infos.promo != 0" class="infos_produit--all--utils--prix--promo">{{ Math.round(product_infos.prix * (1 - product_infos.promo/100) * 100) / 100 }}€(-{{ product_infos.promo }}%)€</div>
+                    </div>
                     <div class="infos_produit--all--utils--taille">
-                        <div v-on:click="choiceSize('XSS')" class="size_product">XSS</div>
-                        <div v-on:click="choiceSize('XS')" class="size_product">XS</div>
-                        <div v-on:click="choiceSize('S')" class="size_product">S</div>
-                        <div v-on:click="choiceSize('M')" class="size_product">M</div>
-                        <div v-on:click="choiceSize('L')" class="size_product">L</div>
-                        <div v-on:click="choiceSize('XL')" class="size_product">XL</div>
-                        <div v-on:click="choiceSize('XLL')" class="size_product">XLL</div>
+                        <div v-for="taille in product_infos.taille" :key="taille" v-on:click="choiceSize(taille[0])">
+                            <span v-if="taille[1] > 0" class="size_product">{{ taille[0] }}</span>
+                        </div>
+                        <div v-if="rupture" class="infos_produit--all--utils--taille--rupture">
+                            RUPTURE DE STOCK
+                        </div>
                     </div>
                     <span id="message_size">cc</span>
                 </div>
@@ -72,6 +75,7 @@
                 product_img:'',
                 choice_size:'',
                 already_fav: false,
+                rupture: false,
             }
         },
         methods:{
@@ -126,15 +130,27 @@
                         }
                         else{
                             let panier = await axios.get(`http://localhost:3000/panier?id_user=${this.user_info.id}&id_produit=${this.product_infos.id}&size=${this.choice_size}`)
-                            let result = await axios.put('http://localhost:3000/panier/'+panier.data[0].id,{
-                                id_user:this.user_info.id,
-                                id_produit:this.product_infos.id,
-                                size:this.choice_size,
-                                nombre: panier.data[0].nombre + 1
-                            });
-                            if(result.status==200){
-                                panier = await axios.get(`http://localhost:3000/panier?id_user=${this.user_info.id}&id_produit=${this.product_infos.id}&size=${this.choice_size}`)
-                                this.messageSize("Ce produit était déjà dans votre panier, vous en avez maintenant "+panier.data[0].nombre, "green", "block");
+                            let  size_quantite = null
+                            for(let i = 0; i < this.product_infos.taille.length; i++){
+                                // panier.data[0].nombre + 1 > this.product_infos.taille[0][1]
+                                if(this.product_infos.taille[i][0] == this.choice_size){
+                                    size_quantite = i
+                                }
+                            }
+                            if(panier.data[0].nombre + 1 > this.product_infos.taille[size_quantite][1]){
+                                this.messageSize("Il n'y a pas assez de produit disponible", "red", "block");
+                            }
+                            else{
+                                let result = await axios.put('http://localhost:3000/panier/'+panier.data[0].id,{
+                                    id_user:this.user_info.id,
+                                    id_produit:this.product_infos.id,
+                                    size:this.choice_size,
+                                    nombre: panier.data[0].nombre + 1
+                                });
+                                if(result.status==200){
+                                    panier = await axios.get(`http://localhost:3000/panier?id_user=${this.user_info.id}&id_produit=${this.product_infos.id}&size=${this.choice_size}`)
+                                    this.messageSize("Ce produit était déjà dans votre panier, vous en avez maintenant "+panier.data[0].nombre, "green", "block");
+                                }
                             }
                         }
                     }
@@ -179,7 +195,6 @@
             this.product_img=this.product_infos.image[0]
 
             let favoris = await axios.get(`http://localhost:3000/favoris?id_user=${this.user_info.id}&id_produit=${this.product_infos.id}`)
-            console.log(favoris)
             if(favoris.data.length == 1){
                 this.already_fav = true
             }
@@ -187,6 +202,13 @@
                 this.already_fav = false
             }
             this.textFavButton()
+
+            if(this.product_infos.taille[0][1] == 0 && this.product_infos.taille[1][1] == 0 && this.product_infos.taille[2][1] == 0 && this.product_infos.taille[3][1] == 0 && this.product_infos.taille[4][1] == 0 && this.product_infos.taille[5][1] == 0 && this.product_infos.taille[6][1] == 0){
+                this.rupture = true
+            }
+            else{
+                this.rupture = false
+            }
         }
     }
     
@@ -222,13 +244,15 @@
             }
             &--image{
                 img{
-                    width:400px;
+                    height:700px;
+                    width:550px;
                     object-fit: cover;
                 }
             }
             .infos_produit--slide::-webkit-scrollbar{display: none;}
             &--slide{
-                width:100px;
+                height:700px;
+                width:150px;
                 overflow: scroll;
                 img{
                     width: 100%;
@@ -248,7 +272,7 @@
                 }
             }
             &--all{
-                width: calc(50% - 250px);
+                width: calc(50% - 350px);
                 margin-left: 5px;
                 padding-left:50px;
                 &--utils{
@@ -266,10 +290,18 @@
                         display: flex;
                         align-items: center;
                         &--code{
-                            height: 15px;
-                            width: 15px;
+                            width:20px;
+                            height:20px;
                             border-radius: 30px;
                             margin-right: 5px;
+                        }
+                    }
+                    &--prix{
+                        display: flex;
+                        &--promo{
+                            color: var(--main-color);
+                            margin-left: 10px;
+                            font-weight: 700;
                         }
                     }
                     &--taille{
@@ -282,22 +314,29 @@
                             background: var(--main-color);
                         }
                         div{
-                            width:40px;
-                            height:40px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            border-bottom: solid 2px var(--light_dark);
-                            border-top: solid 2px var(--light_dark);
-                            border-left: solid 2px var(--light_dark);
-                            transition: ease-in-out 0.3s;
-                            cursor: pointer;
-                            &:hover{
-                                background: var(--main-color);
+                            span{
+                                width:40px;
+                                height:40px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                border-bottom: solid 2px var(--light_dark);
+                                border-top: solid 2px var(--light_dark);
+                                border-left: solid 2px var(--light_dark);
+                                transition: ease-in-out 0.3s;
+                                cursor: pointer;
+                                &:hover{
+                                    background: var(--main-color);
+                                }
+                                
                             }
                             &:last-child{
                                 border-right: solid 2px var(--light_dark);
                             }
+                        }
+                        &--rupture{
+                            border: solid 2px var(--light_dark);
+                            padding:10px;
                         }
                     }
                     #message_size{
@@ -326,7 +365,7 @@
                 }
             }
             &--details{
-                width: calc(50% - 250px);
+                width: calc(50% - 350px);
                 padding-left:50px;
                 div{
                     margin-top: 15px;
@@ -355,18 +394,18 @@
             }
         }
     }
-    @media screen and (max-width: 1500px) {
-        .container_infos_produit{
-            .infos_produit{
-                &--image{
-                    img{
-                        height:500px;
-                    }
-                }
-                &--slide{
-                    height:500px;
-                }
-            }
-        }
-    }
+    // @media screen and (max-width: 1500px) {
+    //     .container_infos_produit{
+    //         .infos_produit{
+    //             &--image{
+    //                 img{
+    //                     height:500px;
+    //                 }
+    //             }
+    //             &--slide{
+    //                 height:500px;
+    //             }
+    //         }
+    //     }
+    // }
 </style>

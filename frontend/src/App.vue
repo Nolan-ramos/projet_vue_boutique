@@ -1,6 +1,7 @@
 <template>
   <router-view></router-view>
   <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/solid.css">
 </template>
 
 <script>

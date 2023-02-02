@@ -52,7 +52,37 @@
       "couleur": "Marron",
       "genre": "homme",
       "prix": 99.99,
-      "quantité": 100,
+      "promo": 20,
+      "taille": [
+        [
+          "XSS",
+          2
+        ],
+        [
+          "XS",
+          100
+        ],
+        [
+          "S",
+          9
+        ],
+        [
+          "M",
+          8
+        ],
+        [
+          "L",
+          23
+        ],
+        [
+          "XL",
+          7
+        ],
+        [
+          "XLL",
+          5
+        ]
+      ],
       "nombre_vente": 0,
       "image": [
         "https://images.asos-media.com/products/asos-design-trench-coat-en-imitation-cuir-ultra-oversize-marron/203644808-1-brown?$n_640w$&wid=513&fit=constrain",
@@ -79,14 +109,44 @@
       "id": 1
     },
     {
-      "name": "Jean baggy d'ensemble - Bleu délavé",
+      "name": "Jean baggy d'ensemble",
       "marque": "ASOS DESIGN",
       "categorie": "jean",
       "code_couleur": "#444251",
       "couleur": "Bleu délavé",
       "genre": "homme",
       "prix": 40.99,
-      "quantité": 100,
+      "promo": 0,
+      "taille": [
+        [
+          "XSS",
+          10
+        ],
+        [
+          "XS",
+          12
+        ],
+        [
+          "S",
+          13
+        ],
+        [
+          "M",
+          5
+        ],
+        [
+          "L",
+          8
+        ],
+        [
+          "XL",
+          7
+        ],
+        [
+          "XLL",
+          3
+        ]
+      ],
       "nombre_vente": 0,
       "image": [
         "https://images.asos-media.com/products/asos-design-jean-baggy-densemble-bleu-delave/203112930-1-blue?$n_640w$&wid=513&fit=constrain",
@@ -120,7 +180,37 @@
       "couleur": "beige",
       "genre": "homme",
       "prix": 37.99,
-      "quantité": 100,
+      "promo": 40,
+      "taille": [
+        [
+          "XSS",
+          100
+        ],
+        [
+          "XS",
+          100
+        ],
+        [
+          "S",
+          100
+        ],
+        [
+          "M",
+          100
+        ],
+        [
+          "L",
+          100
+        ],
+        [
+          "XL",
+          100
+        ],
+        [
+          "XLL",
+          100
+        ]
+      ],
       "nombre_vente": 0,
       "image": [
         "https://images.asos-media.com/products/asos-design-sweat-oversize-avec-broderie-phoenix-style-universitaire-beige/203944235-1-birch?$n_640w$&wid=513&fit=constrain",
@@ -153,7 +243,37 @@
       "couleur": "vert vif",
       "genre": "homme",
       "prix": 49.95,
-      "quantité": 100,
+      "promo": 0,
+      "taille": [
+        [
+          "XSS",
+          100
+        ],
+        [
+          "XS",
+          100
+        ],
+        [
+          "S",
+          100
+        ],
+        [
+          "M",
+          100
+        ],
+        [
+          "L",
+          100
+        ],
+        [
+          "XL",
+          100
+        ],
+        [
+          "XLL",
+          100
+        ]
+      ],
       "nombre_vente": 0,
       "image": [
         "https://images.asos-media.com/products/collusion-unisex-doudoune-vert-vif/201034796-1-green?$n_640w$&wid=513&fit=constrain",
@@ -190,7 +310,37 @@
       "couleur": "rose vif",
       "genre": "femme",
       "prix": 174.99,
-      "quantité": 100,
+      "promo": 30,
+      "taille": [
+        [
+          "XSS",
+          100
+        ],
+        [
+          "XS",
+          100
+        ],
+        [
+          "S",
+          100
+        ],
+        [
+          "M",
+          100
+        ],
+        [
+          "L",
+          100
+        ],
+        [
+          "XL",
+          100
+        ],
+        [
+          "XLL",
+          100
+        ]
+      ],
       "nombre_vente": 0,
       "image": [
         "https://images.asos-media.com/products/asos-edition-robe-courte-en-crepe-avec-nud-dans-le-dos-rose-vif/203925589-1-brightpink?$n_640w$&wid=513&fit=constrain",
@@ -225,109 +375,60 @@
       "id": 1
     },
     {
-      "id_user": 2,
-      "id_produit": 1,
-      "size": "XSS",
-      "nombre": 26,
-      "id": 2
-    },
-    {
-      "id_user": 2,
-      "id_produit": 1,
-      "size": "XS",
-      "nombre": 4,
+      "id_user": 3,
+      "id_produit": 3,
+      "size": "XLL",
+      "nombre": 1,
       "id": 3
     },
     {
-      "id_user": 2,
-      "id_produit": 1,
-      "size": "XLL",
-      "nombre": 73,
+      "id_user": 3,
+      "id_produit": 2,
+      "size": "L",
+      "nombre": 1,
       "id": 4
     },
     {
-      "id_user": 2,
-      "id_produit": 1,
-      "size": "XL",
-      "nombre": 6,
+      "id_user": 3,
+      "id_produit": 2,
+      "size": "XLL",
+      "nombre": 1,
       "id": 5
     },
     {
-      "id_user": 2,
-      "id_produit": 1,
-      "size": "L",
-      "nombre": 5,
+      "id_user": 3,
+      "id_produit": 5,
+      "size": "M",
+      "nombre": 1,
       "id": 6
     },
     {
-      "id_user": 2,
-      "id_produit": 1,
-      "size": "S",
-      "nombre": 22,
+      "id_user": 3,
+      "id_produit": 5,
+      "size": "XLL",
+      "nombre": 1,
       "id": 7
     },
     {
-      "id_user": 2,
+      "id_user": 3,
       "id_produit": 1,
-      "size": "M",
-      "nombre": 13,
+      "size": "XSS",
+      "nombre": 1,
       "id": 8
     },
     {
-      "id_user": 2,
-      "id_produit": 2,
+      "id_user": 3,
+      "id_produit": 1,
       "size": "M",
-      "nombre": 4,
+      "nombre": 1,
       "id": 9
     },
     {
-      "id_user": 2,
-      "id_produit": 2,
-      "size": "XLL",
-      "nombre": 2,
-      "id": 10
-    },
-    {
-      "id_user": 2,
-      "id_produit": 3,
-      "size": "S",
-      "nombre": 2,
-      "id": 11
-    },
-    {
-      "id_user": 2,
-      "id_produit": 3,
-      "size": "XLL",
-      "nombre": 2,
-      "id": 12
-    },
-    {
-      "id_user": 2,
-      "id_produit": 5,
-      "size": "L",
-      "nombre": 1,
-      "id": 13
-    },
-    {
-      "id_user": 2,
-      "id_produit": 5,
-      "size": "XLL",
-      "nombre": 2,
-      "id": 14
-    },
-    {
-      "id_user": 2,
-      "id_produit": 5,
-      "size": "M",
-      "nombre": 2,
-      "id": 15
-    },
-    {
       "id_user": 3,
-      "id_produit": 3,
-      "size": "L",
-      "nombre": 1,
-      "id": 16
+      "id_produit": 1,
+      "size": "XLL",
+      "nombre": 5,
+      "id": 10
     }
   ],
   "favoris": [
@@ -338,48 +439,23 @@
     },
     {
       "id_user": 2,
-      "id_produit": 1,
-      "id": 2
-    },
-    {
-      "id_user": 2,
       "id_produit": 2,
-      "id": 3
-    },
-    {
-      "id_user": 2,
-      "id_produit": 3,
-      "id": 4
-    },
-    {
-      "id_user": 2,
-      "id_produit": 4,
-      "id": 5
-    },
-    {
-      "id_user": 2,
-      "id_produit": 5,
-      "id": 6
-    },
-    {
-      "id_user": 3,
-      "id_produit": 2,
-      "id": 7
-    },
-    {
-      "id_user": 3,
-      "id_produit": 3,
-      "id": 8
-    },
-    {
-      "id_user": 3,
-      "id_produit": 5,
       "id": 9
     },
     {
+      "id_user": 2,
+      "id_produit": 3,
+      "id": 10
+    },
+    {
       "id_user": 3,
       "id_produit": 1,
-      "id": 10
+      "id": 11
+    },
+    {
+      "id_user": 3,
+      "id_produit": 3,
+      "id": 12
     }
   ]
 }

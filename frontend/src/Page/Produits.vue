@@ -8,7 +8,8 @@
                     <span v-on:click="DeleteProduct()"><i class="uil uil-times-square"></i></span>
                 </div>
                 <div class="produit--add_fav">
-                    <span v-on:click="addFav()"><i class="uil uil-favorite"></i></span>
+                    <i v-on:click="addFav(produit.id)" class="uil uil-favorite add_fav_dark" v-if="!this.fav_list.includes(produit.id)"></i>
+                    <i v-on:click="deleteFav(produit.id)" class="uis uis-star" v-if="this.fav_list.includes(produit.id)"></i>
                 </div>
                 <router-link :to="{name: 'InfosProduit', params: {id: produit.id}}" class="produit--card">
                     <img :src="produit.image[0]" alt="">
@@ -17,7 +18,11 @@
                         <span class="produit--card--infos--marque">{{ produit.marque }}</span>
                         <div class="produit--card--infos--color_prix">
                             <div class="produit_color"><div :style="{ background: produit.code_couleur}"></div><div>{{ produit.couleur }}</div></div>
-                            <span class="produit_prix">{{ produit.prix }}€</span>
+                            <div class="produit_prix">
+                                <span v-if="!produit.promo">{{ produit.prix }}€</span>
+                                <span v-if="produit.promo" style="text-decoration:line-through;">{{ produit.prix }}€</span>
+                                <span class="produit_prix--promo" v-if="produit.promo != 0">{{ Math.round(produit.prix * (1 - produit.promo/100) * 100) / 100 }}€(-{{ produit.promo }}%)</span>
+                            </div>
                         </div>
                     </div>
                 </router-link>
@@ -45,16 +50,35 @@
             async loadData(){
                 let result = await axios.get('http://localhost:3000/produits');
                 this.produits = result.data;
-
                 this.user_info = JSON.parse(localStorage.getItem('user-info'));
+                console.log(this.produits)
             },
             async favList(){
                 this.user_info = JSON.parse(localStorage.getItem('user-info'));
                 let result = await axios.get(`http://localhost:3000/favoris?id_user=${this.user_info.id}`)
                 for(let i = 0; i < result.data.length; i++){
-                    this.fav_list.push(result.data[i].id_produit)
+                    if(!this.fav_list.includes(result.data[i].id_produit)){
+                        this.fav_list.push(result.data[i].id_produit)
+                    }
                 }
-            }
+            },
+            async addFav(product_id){
+                let result = await axios.post("http://localhost:3000/favoris",{
+                    id_user:this.user_info.id,
+                    id_produit:product_id,
+                });
+                if(result.status==201){
+                    this.favList()
+                }
+            },
+            async deleteFav(product_id){
+                let fav_to_delete = await axios.get(`http://localhost:3000/favoris?id_user=${this.user_info.id}&id_produit=${product_id}`)
+                let result = await axios.delete('http://localhost:3000/favoris/'+fav_to_delete.data[0].id)
+                if(result.status==200){
+                    var index_to_delete = this.fav_list.indexOf(product_id);
+                    this.fav_list.splice(index_to_delete, 1);
+                }
+            },
         },
         async mounted(){
             this.loadData()
@@ -103,18 +127,16 @@
                     top:7.5px;
                     right:7.5px;
                     z-index: 1;
-                    span{
-                        i{  
-                            // color: var(--main-color);
-                            font-size: 24px;
-                            line-height: 1;
-                        }
-                    }
-                    .add_fav_dark{
-                        color: var(--dark);
-                    }
-                    .add_fav_main_color{
+                    i{     
+                        cursor: pointer;
+                        display: block;
+                        transition: ease-in-out 0.3s;
                         color: var(--main-color);
+                        font-size: 24px;
+                        line-height: 1;
+                        &:hover{
+                            rotate: 360deg;
+                        }
                     }
                 }
                 &:nth-child(5n){
@@ -168,6 +190,14 @@
                                     }
                                 }
                             }
+                            .produit_prix{
+                                display: flex;
+                                &--promo{
+                                    margin-left: 5px;
+                                    color: var(--main-color);
+                                    font-weight: 700;
+                                }
+                            }
                         }
                     }
                     &:hover img{
@@ -180,22 +210,22 @@
             }
         }
     }
-    @media screen and (max-width: 1500px) {
-        .container_produits{
-            &--all_produits{
-                .produit{
-                    width:calc(100%/4 - 26.3px);
-                    &:nth-child(5n){
-                        margin-right: 35px;
-                    }
-                    &:nth-child(4n){
-                        margin-right: 0;
-                    }
-                    &:nth-child(5){
-                        margin-top: 35px;
-                    }
-                }
-            }
-        }
-    }
+    // @media screen and (max-width: 1500px) {
+    //     .container_produits{
+    //         &--all_produits{
+    //             .produit{
+    //                 width:calc(100%/4 - 26.3px);
+    //                 &:nth-child(5n){
+    //                     margin-right: 35px;
+    //                 }
+    //                 &:nth-child(4n){
+    //                     margin-right: 0;
+    //                 }
+    //                 &:nth-child(5){
+    //                     margin-top: 35px;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 </style>
