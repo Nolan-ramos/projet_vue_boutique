@@ -7,7 +7,6 @@
             <input type="password" v-model="user_infos.password" placeholder="Email">
             <input type="text" v-model="user_infos.prenom" placeholder="Prénom">
             <input type="text" v-model="user_infos.nom" placeholder="Nom">
-            <input type="date" v-model="user_infos.date_naissance">
             <input type="tel" v-model="user_infos.telephone" placeholder="Télephone">
             <input type="text" v-model="user_infos.adresse" placeholder="Adresse">
             <input type="text" v-model="user_infos.ville" placeholder="Ville">
@@ -34,7 +33,6 @@
                     password:'',
                     prenom:'',
                     nom:'',
-                    date_naissance:'',
                     telephone:'',
                     adresse:'',
                     ville:'',
@@ -56,7 +54,6 @@
                     password:this.user_infos.password,
                     prenom:this.user_infos.prenom,
                     nom:this.user_infos.nom,
-                    date_naissance:this.user_infos.date_naissance,
                     telephone:this.user_infos.telephone,
                     adresse:this.user_infos.adresse,
                     ville:this.user_infos.ville,

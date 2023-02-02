@@ -55,6 +55,7 @@ export default {
         font-size: 32px;
     }
     input{
+        transition: ease-in-out 0.3s;
         border: 1px solid var(--light_dark);
         background: var(--dark);
         padding:20px;

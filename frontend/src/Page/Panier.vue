@@ -4,12 +4,29 @@
         <!-- 0 = name, 1 = marque, 2 = categorie, 3 = code couleur, 4 = couleur, 5 = prix, 6 = promo, 7 = taille, 8 = image, 9 = id, 10 = nombre, 11 = size -->
         <div class="container_panier--infos_paiement">
             <div class="paiement">
-                TOTAL
+                <h1>total</h1>
                 <hr>
+                <div class="paiement--prix">
+                    <span>Sous total</span>
+                    <span>{{ prix_panier }}€</span>
+                </div>
+                <div class="paiement--code_promo">
+                    <span>Code promotionel</span>
+                    <div class="paiement--code_promo--input">
+                        <input type="text" placeholder="Code promotionel">
+                    </div>
+                </div>
+                <div class="paiement--button">
+                    <button>Paiement</button>
+                </div>
             </div>
         </div>
         <div class="container_panier--all_panier">
             <div v-for="panier in produit_panier" :key="panier" class="panier">
+                <div class="panier--fav">
+                    <i v-on:click="addFav(panier[9])" class="uil uil-favorite" v-if="!this.fav_list.includes(panier[9])"></i>
+                    <i v-on:click="deleteFav(panier[9])" class="uis uis-star" v-if="this.fav_list.includes(panier[9])"></i>
+                </div>
                 <router-link :to="{name: 'InfosProduit', params: {id: panier[9]}}" class="panier--link">
                     <img class="panier--link--image" :src="panier[8][0]" alt="">
                 </router-link>
@@ -31,6 +48,9 @@
                         <div class="panier--infos--quantite--nombre">{{ panier[10] }}</div>
                         <div class="panier--infos--quantite--less">+</div>
                     </div>
+                    <button class="panier--infos--delete">
+                        Supprimer du panier
+                    </button>
                 </div>
             </div>
         </div>
@@ -49,6 +69,8 @@
             return{
                 produit_panier:[],
                 user_info:'',
+                fav_list:[],
+                prix_panier: 0,
             }
         },
         methods:{
@@ -77,7 +99,39 @@
                         }
                     }
                 }
-                console.log(this.produit_panier)
+                this.prixPanier()
+            },
+            async favList(){
+                this.user_info = JSON.parse(localStorage.getItem('user-info'));
+                let result = await axios.get(`http://localhost:3000/favoris?id_user=${this.user_info.id}`)
+                for(let i = 0; i < result.data.length; i++){
+                    if(!this.fav_list.includes(result.data[i].id_produit)){
+                        this.fav_list.push(result.data[i].id_produit)
+                    }
+                }
+            },
+            async addFav(product_id){
+                let result = await axios.post("http://localhost:3000/favoris",{
+                    id_user:this.user_info.id,
+                    id_produit:product_id,
+                });
+                if(result.status==201){
+                    this.favList()
+                }
+            },
+            async deleteFav(product_id){
+                let fav_to_delete = await axios.get(`http://localhost:3000/favoris?id_user=${this.user_info.id}&id_produit=${product_id}`)
+                let result = await axios.delete('http://localhost:3000/favoris/'+fav_to_delete.data[0].id)
+                if(result.status==200){
+                    var index_to_delete = this.fav_list.indexOf(product_id);
+                    this.fav_list.splice(index_to_delete, 1);
+                }
+            },
+            prixPanier(){
+                for(let i = 0; i < this.produit_panier.length; i++){
+                    console.log(this.produit_panier[i])
+                    this.prix_panier = this.prix_panier + Math.round(this.produit_panier[i][5] * (1 - this.produit_panier[i][6]/100) * 100) / 100
+                }
             }
         },
         mounted(){
@@ -86,6 +140,7 @@
                 this.$router.push({name:'Login'})
             }
             this.loadData()
+            this.favList()
         }
     }
 </script>
@@ -99,18 +154,84 @@
                 width:400px;
                 padding:50px;
                 background: var(--very_dark);
+                h1{
+                    text-transform: uppercase;
+                    font-weight: 700;
+                    font-size: 18px;
+                }
+                hr{
+                    margin: 25px 0;
+                }
+                &--prix{
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 25px;
+                    span:first-child{
+                        font-weight: 700;
+                    }
+                }
+                &--code_promo{
+                    margin-bottom: 25px;
+                    &--input{
+                        margin-top: 10px;
+                        input{
+                            transition: ease-in-out 0.3s;
+                            border: 1px solid var(--light_dark);
+                            background: var(--dark);
+                            padding:20px;
+                            color:white;
+                            width: 100%;
+                            &:focus{
+                                border: 1px solid var(--main-color);
+                            }
+                        }
+                    }
+                }
+                &--button{
+                    button{
+                        transition: ease-in-out 0.3s;
+                        border: 1px solid var(--main-color);
+                        background: var(--dark);
+                        padding:20px;
+                        color:white;
+                        width: 100%;
+                        &:hover{
+                            background: var(--main-color);
+                        }
+                    }
+                }
             }
         }
         &--all_panier{
             order: 1;
             margin-right: 50px;
             .panier{
+                position: relative;
                 display: flex;
                 margin-bottom: 100px;
+                &--fav{
+                    position:absolute;
+                    top:7.5px;
+                    left:320px;
+                    z-index: 2;
+                    i{     
+                        cursor: pointer;
+                        display: block;
+                        transition: ease-in-out 0.3s;
+                        color: var(--main-color);
+                        font-size: 24px;
+                        line-height: 1;
+                        &:hover{
+                            rotate: 360deg;
+                        }
+                    }
+                }
                 &--link{
+                    position:relative;
                     &--image{
                         width:350px;
                         transition: ease-in-out 0.3s;
+                        object-fit: cover;
                         &:hover{
                             opacity:0.7;
                         }
@@ -151,7 +272,7 @@
                         border:solid 1px var(--light_dark);
                     }
                     &--quantite{
-                        margin-top: 25px;
+                        margin: 25px 0;
                         display: flex;
                         align-items: center;
                         &--less,
@@ -176,6 +297,19 @@
                         &--nombre{
                             border-left-width: 0px;
                             border-right-width: 0px;
+                        }
+                    }
+                    &--delete{
+                        background: var(--dark);
+                        color:#fff ;
+                        font-size: 16px;
+                        padding:20px 25px;
+                        border: solid 1px var(--main-color);
+                        transition: ease-in-out 0.3s;
+                        
+                        &:hover{
+                            background: var(--main-color);
+                            
                         }
                     }
                 }
