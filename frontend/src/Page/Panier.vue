@@ -1,7 +1,7 @@
 <template>
     <div class="container_page container_panier">
         <Nav/>
-        <!-- 0 = name, 1 = marque, 2 = categorie, 3 = code couleur, 4 = couleur, 5 = prix, 6 = promo, 7 = taille, 8 = image, 9 = id, 10 = nombre, 11 = size -->
+        <!-- 0 = name, 1 = marque, 2 = categorie, 3 = code couleur, 4 = couleur, 5 = prix, 6 = promo, 7 = taille, 8 = image, 9 = id produit, 10 = nombre, 11 = size, 12 = id panier -->
         <div class="container_panier--infos_paiement">
             <div class="paiement">
                 <h1>total</h1>
@@ -12,8 +12,9 @@
                 </div>
                 <div class="paiement--code_promo">
                     <span>Code promotionel</span>
-                    <div class="paiement--code_promo--input">
-                        <input type="text" placeholder="Code promotionel">
+                    <div class="paiement--code_promo--input_button">
+                        <input type="text" v-model="code_promo" placeholder="Code promotionel">
+                        <button v-on:click="confirmCodePromo()">Valider</button>
                     </div>
                 </div>
                 <div class="paiement--button">
@@ -48,7 +49,7 @@
                         <div class="panier--infos--quantite--nombre">{{ panier[10] }}</div>
                         <div class="panier--infos--quantite--less">+</div>
                     </div>
-                    <button class="panier--infos--delete">
+                    <button v-on:click="deletePanier(panier[12])" class="panier--infos--delete">
                         Supprimer du panier
                     </button>
                 </div>
@@ -71,6 +72,7 @@
                 user_info:'',
                 fav_list:[],
                 prix_panier: 0,
+                code_promo: "",
             }
         },
         methods:{
@@ -93,7 +95,8 @@
                                 produits.data[j].image,
                                 produits.data[j].id,
                                 panier.data[i].nombre,
-                                panier.data[i].size
+                                panier.data[i].size,
+                                panier.data[i].id
                             )
                             this.produit_panier.push(add_to_produit_panier)
                         }
@@ -127,12 +130,31 @@
                     this.fav_list.splice(index_to_delete, 1);
                 }
             },
+            async deletePanier(id_panier){
+                let delete_panier = await axios.delete('http://localhost:3000/panier/'+id_panier)
+                let index_delete_panier = 0
+                if(delete_panier.status==200){
+                    for(let i = 0; i < this.produit_panier.length; i++){
+                        if(this.produit_panier[i][12] == id_panier){
+                            index_delete_panier = i
+                        }
+                    }
+                }
+                this.produit_panier.splice(index_delete_panier, 1);
+                this.prixPanier()
+            },
             prixPanier(){
+                this.prix_panier = 0;
                 for(let i = 0; i < this.produit_panier.length; i++){
                     console.log(this.produit_panier[i])
-                    this.prix_panier = this.prix_panier + Math.round(this.produit_panier[i][5] * (1 - this.produit_panier[i][6]/100) * 100) / 100
+                    this.prix_panier = this.prix_panier + this.produit_panier[i][5] * (1 - this.produit_panier[i][6]/100)
                 }
-            }
+                this.prix_panier = this.prix_panier.toFixed(2)
+            },
+            confirmCodePromo(){
+                console.log(this.code_promo)
+            },
+            
         },
         mounted(){
             this.user_info = JSON.parse(localStorage.getItem('user-info'));
@@ -172,17 +194,29 @@
                 }
                 &--code_promo{
                     margin-bottom: 25px;
-                    &--input{
+                    &--input_button{
+                        display: flex;
                         margin-top: 10px;
                         input{
+                            width: 100%;
+                            margin-right: 10px;
                             transition: ease-in-out 0.3s;
                             border: 1px solid var(--light_dark);
                             background: var(--dark);
                             padding:20px;
                             color:white;
-                            width: 100%;
                             &:focus{
                                 border: 1px solid var(--main-color);
+                            }
+                        }
+                        button{
+                            transition: ease-in-out 0.3s;
+                            border: 1px solid var(--main-color);
+                            background: var(--dark);
+                            color:white;
+                            padding:0 25px;
+                            &:hover{
+                                background: var(--main-color);
                             }
                         }
                     }

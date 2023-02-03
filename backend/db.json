@@ -372,27 +372,6 @@
       "size": "XL",
       "nombre": 3,
       "id": 1
-    },
-    {
-      "id_user": 3,
-      "id_produit": 3,
-      "size": "XLL",
-      "nombre": 1,
-      "id": 3
-    },
-    {
-      "id_user": 3,
-      "id_produit": 2,
-      "size": "L",
-      "nombre": 1,
-      "id": 4
-    },
-    {
-      "id_user": 3,
-      "id_produit": 2,
-      "size": "XLL",
-      "nombre": 1,
-      "id": 5
     }
   ],
   "favoris": [
