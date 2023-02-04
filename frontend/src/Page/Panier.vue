@@ -8,12 +8,16 @@
                 <hr>
                 <div class="paiement--prix">
                     <span>Sous total</span>
-                    <span>{{ prix_panier }}€</span>
+                    <div class="paiement--prix--promo">
+                        <div v-if="code_promo[1] == 0">{{ prix_panier }}€</div>
+                        <div v-if="code_promo[1] != 0" style="text-decoration:line-through;">{{ prix_panier }}€</div>
+                        <div v-if="code_promo[1] != 0" class="paiement--prix--promo--main_color">{{ Math.round(prix_panier * (1 - code_promo[1]/100) * 100) / 100 }}€(-{{ code_promo[1] }}%)</div>
+                    </div>
                 </div>
                 <div class="paiement--code_promo">
                     <span>Code promotionel</span>
                     <div class="paiement--code_promo--input_button">
-                        <input type="text" v-model="code_promo" placeholder="Code promotionel">
+                        <input type="text" v-model="code_promo[0]" placeholder="Code promotionel">
                         <button v-on:click="confirmCodePromo()">Valider</button>
                     </div>
                 </div>
@@ -72,7 +76,7 @@
                 user_info:'',
                 fav_list:[],
                 prix_panier: 0,
-                code_promo: "",
+                code_promo: ["", 0],
             }
         },
         methods:{
@@ -143,18 +147,23 @@
                 this.produit_panier.splice(index_delete_panier, 1);
                 this.prixPanier()
             },
+            async confirmCodePromo(){
+                let code_promo = await axios.get('http://localhost:3000/code_promo')
+                for(let i = 0; i < code_promo.data.length; i++){
+                    if(this.code_promo[0] == code_promo.data[i].code){
+                        this.code_promo[1] = code_promo.data[i].promo
+                    }
+                }
+                
+                console.log(this.user_info.date_naissance)
+            },
             prixPanier(){
                 this.prix_panier = 0;
                 for(let i = 0; i < this.produit_panier.length; i++){
-                    console.log(this.produit_panier[i])
                     this.prix_panier = this.prix_panier + this.produit_panier[i][5] * (1 - this.produit_panier[i][6]/100)
                 }
                 this.prix_panier = this.prix_panier.toFixed(2)
             },
-            confirmCodePromo(){
-                console.log(this.code_promo)
-            },
-            
         },
         mounted(){
             this.user_info = JSON.parse(localStorage.getItem('user-info'));
@@ -190,6 +199,14 @@
                     margin-bottom: 25px;
                     span:first-child{
                         font-weight: 700;
+                    }
+                    &--promo{
+                        display: flex;
+                        &--main_color{
+                            margin-left: 10px;
+                            font-weight: 700;
+                            color:var(--main-color);
+                        }
                     }
                 }
                 &--code_promo{

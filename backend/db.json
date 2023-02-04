@@ -33,6 +33,7 @@
       "password": "test",
       "prenom": "test",
       "nom": "test",
+      "date_naissance": "2023-02-03",
       "telephone": null,
       "adresse": "",
       "ville": "",
@@ -372,6 +373,55 @@
       "size": "XL",
       "nombre": 3,
       "id": 1
+    },
+    {
+      "id_user": 3,
+      "id_produit": 1,
+      "size": "M",
+      "nombre": 1,
+      "id": 4
+    },
+    {
+      "id_user": 3,
+      "id_produit": 3,
+      "size": "XLL",
+      "nombre": 1,
+      "id": 7
+    },
+    {
+      "id_user": 3,
+      "id_produit": 5,
+      "size": "M",
+      "nombre": 1,
+      "id": 9
+    },
+    {
+      "id_user": 3,
+      "id_produit": 2,
+      "size": "XSS",
+      "nombre": 1,
+      "id": 11
+    },
+    {
+      "id_user": 3,
+      "id_produit": 2,
+      "size": "M",
+      "nombre": 1,
+      "id": 12
+    },
+    {
+      "id_user": 3,
+      "id_produit": 4,
+      "size": "XSS",
+      "nombre": 1,
+      "id": 14
+    },
+    {
+      "id_user": 3,
+      "id_produit": 4,
+      "size": "M",
+      "nombre": 1,
+      "id": 15
     }
   ],
   "favoris": [
