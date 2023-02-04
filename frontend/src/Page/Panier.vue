@@ -49,9 +49,9 @@
                     </div>
                     <span class="panier--infos--size">{{ panier[11] }}</span>
                     <div class="panier--infos--quantite">
-                        <div class="panier--infos--quantite--less">-</div>
+                        <div v-on:click="lessNombre(panier[12])" class="panier--infos--quantite--less">-</div>
                         <div class="panier--infos--quantite--nombre">{{ panier[10] }}</div>
-                        <div class="panier--infos--quantite--less">+</div>
+                        <div v-on:click="moreNombre(panier[12])" class="panier--infos--quantite--less">+</div>
                     </div>
                     <button v-on:click="deletePanier(panier[12])" class="panier--infos--delete">
                         Supprimer du panier
@@ -146,6 +146,30 @@
                 }
                 this.produit_panier.splice(index_delete_panier, 1);
                 this.prixPanier()
+            },
+            async lessNombre(id_panier){
+                let panier = await axios.get(`http://localhost:3000/panier?id=${id_panier}`)
+                let result = await axios.put('http://localhost:3000/panier/'+id_panier,{
+                    id_user: panier.data[0].id_user,
+                    id_produit: panier.data[0].id_produit,
+                    size: panier.data[0].size,
+                    nombre: panier.data[0].nombre - 1
+                });
+                if(result.status==200){
+                    console.log("-1")
+                }
+            },
+            async moreNombre(id_panier){
+                let panier = await axios.get(`http://localhost:3000/panier?id=${id_panier}`)
+                let result = await axios.put('http://localhost:3000/panier/'+id_panier,{
+                    id_user: panier.data[0].id_user,
+                    id_produit: panier.data[0].id_produit,
+                    size: panier.data[0].size,
+                    nombre: panier.data[0].nombre + 1
+                });
+                if(result.status==200){
+                    console.log("+1")
+                }
             },
             async confirmCodePromo(){
                 let code_promo = await axios.get('http://localhost:3000/code_promo')

@@ -376,23 +376,16 @@
     },
     {
       "id_user": 3,
-      "id_produit": 1,
-      "size": "M",
-      "nombre": 1,
-      "id": 4
-    },
-    {
-      "id_user": 3,
       "id_produit": 3,
       "size": "XLL",
-      "nombre": 1,
+      "nombre": 7,
       "id": 7
     },
     {
       "id_user": 3,
       "id_produit": 5,
       "size": "M",
-      "nombre": 1,
+      "nombre": 4,
       "id": 9
     },
     {
@@ -410,10 +403,7 @@
       "id": 12
     },
     {
-      "id_user": 3,
-      "id_produit": 4,
-      "size": "XSS",
-      "nombre": 1,
+      "nombre": null,
       "id": 14
     },
     {
