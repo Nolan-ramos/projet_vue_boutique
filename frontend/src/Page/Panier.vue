@@ -156,7 +156,12 @@
                     nombre: panier.data[0].nombre - 1
                 });
                 if(result.status==200){
-                    console.log("-1")
+                    for(let i = 0; i < this.produit_panier.length; i++){
+                        if(this.produit_panier[i][12] == id_panier){
+                            this.produit_panier[i][10] = this.produit_panier[i][10] - 1
+                        }
+                    }
+                    this.prixPanier()
                 }
             },
             async moreNombre(id_panier){
@@ -168,7 +173,12 @@
                     nombre: panier.data[0].nombre + 1
                 });
                 if(result.status==200){
-                    console.log("+1")
+                    for(let i = 0; i < this.produit_panier.length; i++){
+                        if(this.produit_panier[i][12] == id_panier){
+                            this.produit_panier[i][10] = this.produit_panier[i][10] + 1
+                        }
+                    }
+                    this.prixPanier()
                 }
             },
             async confirmCodePromo(){
@@ -178,13 +188,12 @@
                         this.code_promo[1] = code_promo.data[i].promo
                     }
                 }
-                
-                console.log(this.user_info.date_naissance)
             },
             prixPanier(){
                 this.prix_panier = 0;
                 for(let i = 0; i < this.produit_panier.length; i++){
-                    this.prix_panier = this.prix_panier + this.produit_panier[i][5] * (1 - this.produit_panier[i][6]/100)
+                    console.log(this.produit_panier[i])
+                    this.prix_panier = this.prix_panier + (this.produit_panier[i][5] * (1 - this.produit_panier[i][6]/100)) * this.produit_panier[i][10]
                 }
                 this.prix_panier = this.prix_panier.toFixed(2)
             },

@@ -375,42 +375,14 @@
       "id": 1
     },
     {
-      "id_user": 3,
-      "id_produit": 3,
-      "size": "XLL",
-      "nombre": 7,
-      "id": 7
-    },
-    {
-      "id_user": 3,
-      "id_produit": 5,
-      "size": "M",
-      "nombre": 4,
-      "id": 9
-    },
-    {
-      "id_user": 3,
-      "id_produit": 2,
-      "size": "XSS",
-      "nombre": 1,
-      "id": 11
-    },
-    {
-      "id_user": 3,
-      "id_produit": 2,
-      "size": "M",
-      "nombre": 1,
-      "id": 12
-    },
-    {
       "nombre": null,
       "id": 14
     },
     {
       "id_user": 3,
-      "id_produit": 4,
-      "size": "M",
-      "nombre": 1,
+      "id_produit": 3,
+      "size": "XLL",
+      "nombre": 7,
       "id": 15
     }
   ],
@@ -429,11 +401,6 @@
       "id_user": 2,
       "id_produit": 3,
       "id": 10
-    },
-    {
-      "id_user": 3,
-      "id_produit": 5,
-      "id": 11
     },
     {
       "id_user": 3,
