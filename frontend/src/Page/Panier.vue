@@ -149,36 +149,55 @@
             },
             async lessNombre(id_panier){
                 let panier = await axios.get(`http://localhost:3000/panier?id=${id_panier}`)
-                let result = await axios.put('http://localhost:3000/panier/'+id_panier,{
-                    id_user: panier.data[0].id_user,
-                    id_produit: panier.data[0].id_produit,
-                    size: panier.data[0].size,
-                    nombre: panier.data[0].nombre - 1
-                });
-                if(result.status==200){
-                    for(let i = 0; i < this.produit_panier.length; i++){
-                        if(this.produit_panier[i][12] == id_panier){
-                            this.produit_panier[i][10] = this.produit_panier[i][10] - 1
-                        }
-                    }
-                    this.prixPanier()
+                if(panier.data[0].nombre - 1 < 1){
+                    console.log("non")
                 }
+                else{
+                    let result = await axios.put('http://localhost:3000/panier/'+id_panier,{
+                        id_user: panier.data[0].id_user,
+                        id_produit: panier.data[0].id_produit,
+                        size: panier.data[0].size,
+                        nombre: panier.data[0].nombre - 1
+                    });
+                    if(result.status==200){
+                        for(let i = 0; i < this.produit_panier.length; i++){
+                            if(this.produit_panier[i][12] == id_panier){
+                                this.produit_panier[i][10] = this.produit_panier[i][10] - 1
+                            }
+                        }
+                        this.prixPanier()
+                    }
+                }
+                
             },
             async moreNombre(id_panier){
                 let panier = await axios.get(`http://localhost:3000/panier?id=${id_panier}`)
-                let result = await axios.put('http://localhost:3000/panier/'+id_panier,{
-                    id_user: panier.data[0].id_user,
-                    id_produit: panier.data[0].id_produit,
-                    size: panier.data[0].size,
-                    nombre: panier.data[0].nombre + 1
-                });
-                if(result.status==200){
-                    for(let i = 0; i < this.produit_panier.length; i++){
-                        if(this.produit_panier[i][12] == id_panier){
-                            this.produit_panier[i][10] = this.produit_panier[i][10] + 1
+                for(let i = 0; i < this.produit_panier.length; i++){
+                    if(this.produit_panier[i][12] == id_panier){
+                        for(let j = 0; j < this.produit_panier[i][7].length; j++){
+                            if(this.produit_panier[i][7][j][0] == panier.data[0].size){
+                                if(panier.data[0].nombre + 1 > this.produit_panier[i][7][j][1]){
+                                    console.log("a pu")
+                                }
+                                else{
+                                    let result = await axios.put('http://localhost:3000/panier/'+id_panier,{
+                                        id_user: panier.data[0].id_user,
+                                        id_produit: panier.data[0].id_produit,
+                                        size: panier.data[0].size,
+                                        nombre: panier.data[0].nombre + 1
+                                    });
+                                    if(result.status==200){
+                                        for(let i = 0; i < this.produit_panier.length; i++){
+                                            if(this.produit_panier[i][12] == id_panier){
+                                                this.produit_panier[i][10] = this.produit_panier[i][10] + 1
+                                            }
+                                        }
+                                        this.prixPanier()
+                                    }
+                                }
+                            }
                         }
                     }
-                    this.prixPanier()
                 }
             },
             async confirmCodePromo(){
