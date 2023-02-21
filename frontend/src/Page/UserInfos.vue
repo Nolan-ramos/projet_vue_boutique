@@ -63,6 +63,7 @@
 
                 });
                 if(result.status==200){
+                    localStorage.setItem("user-info",JSON.stringify(result.data))
                     this.messageForm("Modifications enregistrées !","green","block")
                 }
             }

@@ -1,6 +1,7 @@
 <template>
     <div class="container_page container_panier">
         <Nav/>
+        <Paiement :produit_panier="produit_panier"/>
         <!-- 0 = name, 1 = marque, 2 = categorie, 3 = code couleur, 4 = couleur, 5 = prix, 6 = promo, 7 = taille, 8 = image, 9 = id produit, 10 = nombre, 11 = size, 12 = id panier -->
         <div class="container_panier--infos_paiement">
             <div class="paiement">
@@ -20,9 +21,10 @@
                         <input type="text" v-model="code_promo[0]" placeholder="Code promotionel">
                         <button v-on:click="confirmCodePromo()">Valider</button>
                     </div>
+                    <div class="paiement--code_promo--message"></div>
                 </div>
                 <div class="paiement--button">
-                    <button>Paiement</button>
+                    <button v-on:click="openPaiement()">Paiement</button>
                 </div>
             </div>
         </div>
@@ -47,11 +49,21 @@
                         <span v-if="panier[6] != 0" style="text-decoration:line-through;">{{ panier[5] }}€</span>
                         <span class="panier--infos--prix--promo" v-if="panier[6] != 0">{{ Math.round(panier[5] * (1 - panier[6]/100) * 100) / 100 }}€(-{{ panier[6] }}%)</span>
                     </div>
-                    <span class="panier--infos--size">{{ panier[11] }}</span>
+                    <div class="panier--infos--size">
+                        <div class="panier--infos--size--modif">
+                            <div class="panier--infos--size--modif--actuel">{{ panier[11] }}</div>
+                            <div class="panier--infos--size--modif--choix" v-for="taille in panier[7]" :key="taille">
+                                <span v-if="taille[0] != panier[11] && taille[1] > 0" v-on:click="modifSize(panier[12], panier[9], taille[0], panier[10], panier[7])">{{ taille[0] }}</span>
+                            </div>
+                        </div>
+                        <div class="panier--infos--size--message" :id="'size_message_'+panier[12]"></div>
+                        <div ></div>
+                    </div>
                     <div class="panier--infos--quantite">
                         <div v-on:click="lessNombre(panier[12])" class="panier--infos--quantite--less">-</div>
                         <div class="panier--infos--quantite--nombre">{{ panier[10] }}</div>
                         <div v-on:click="moreNombre(panier[12])" class="panier--infos--quantite--less">+</div>
+                        <div class="panier--infos--quantite--message" :id="'quantite_message_'+panier[12]"></div>
                     </div>
                     <button v-on:click="deletePanier(panier[12])" class="panier--infos--delete">
                         Supprimer du panier
@@ -65,10 +77,12 @@
 <script>
     import axios from 'axios'
     import Nav from '../components/Nav.vue'
+    import Paiement from '../components/Paiement.vue'
     export default {
         name :'Panier',
         components:{
-            Nav
+            Nav,
+            Paiement
         },
         data(){
             return{
@@ -77,6 +91,8 @@
                 fav_list:[],
                 prix_panier: 0,
                 code_promo: ["", 0],
+                id_message_quant:0,
+                id_message_size:0,
             }
         },
         methods:{
@@ -150,7 +166,7 @@
             async lessNombre(id_panier){
                 let panier = await axios.get(`http://localhost:3000/panier?id=${id_panier}`)
                 if(panier.data[0].nombre - 1 < 1){
-                    console.log("non")
+                    this.messageQuant(id_panier,"Vous ne pouvez pas descendre en dessous de 1 article =p","red")
                 }
                 else{
                     let result = await axios.put('http://localhost:3000/panier/'+id_panier,{
@@ -165,6 +181,7 @@
                                 this.produit_panier[i][10] = this.produit_panier[i][10] - 1
                             }
                         }
+                        this.messageQuant(id_panier,"Modifications enregistrées =)","green")
                         this.prixPanier()
                     }
                 }
@@ -177,7 +194,7 @@
                         for(let j = 0; j < this.produit_panier[i][7].length; j++){
                             if(this.produit_panier[i][7][j][0] == panier.data[0].size){
                                 if(panier.data[0].nombre + 1 > this.produit_panier[i][7][j][1]){
-                                    console.log("a pu")
+                                    this.messageQuant(id_panier,"Il n'y a pas assez d'articles =(","red")
                                 }
                                 else{
                                     let result = await axios.put('http://localhost:3000/panier/'+id_panier,{
@@ -192,6 +209,7 @@
                                                 this.produit_panier[i][10] = this.produit_panier[i][10] + 1
                                             }
                                         }
+                                        this.messageQuant(id_panier,"Modifications enregistrées =)","green")
                                         this.prixPanier()
                                     }
                                 }
@@ -200,22 +218,125 @@
                     }
                 }
             },
+            async modifSize(id_panier, id_produit, taille, nombre, all_taille){
+                let already_panier = ""
+                for(let i = 0; i < this.produit_panier.length; i++){
+                    if(this.produit_panier[i][9] == id_produit && this.produit_panier[i][11] == taille){
+                        already_panier = "oui"
+                        break
+                    }
+                    else{
+                        already_panier = "non"
+                    }
+                }
+                if(already_panier == "oui"){ 
+                    this.messageSize(id_panier,"Cet article dans cette taille est déjà dans votre panier =v","red")
+                }
+                else{
+                    let new_nombre = 0
+                    for(let i = 0; i < all_taille.length; i++){
+                        if(all_taille[i][0] == taille){
+                            if(all_taille[i][1] >= nombre){
+                                new_nombre = nombre
+                                this.messageSize(id_panier,"modifications enregistrées =)","green")
+                            }
+                            else{
+                                new_nombre = all_taille[i][1]
+                                this.messageSize(id_panier, "Il y'avait pas assez de produits disponibles alors la quantité a été réduite =s","orange")
+                            }
+                        }
+                    }
+                    let modif_panier = await axios.put('http://localhost:3000/panier/'+id_panier,{
+                        id_user: this.user_info.id,
+                        id_produit: id_produit,
+                        size: taille,
+                        nombre: new_nombre
+                    });
+                    if(modif_panier.status==200){
+                        for(let i = 0; i < this.produit_panier.length; i++){
+                            if(this.produit_panier[i][12] == id_panier){
+                                this.produit_panier[i][11] = taille
+                                this.produit_panier[i][10] = new_nombre
+                            }
+                        }
+                        this.prixPanier()
+                    }
+                }
+            },
             async confirmCodePromo(){
                 let code_promo = await axios.get('http://localhost:3000/code_promo')
                 for(let i = 0; i < code_promo.data.length; i++){
-                    if(this.code_promo[0] == code_promo.data[i].code){
-                        this.code_promo[1] = code_promo.data[i].promo
+                    var ladate = new Date()
+                    var date = ladate.getFullYear()
+                    if(ladate.getMonth()+1 < 10){
+                        date = date +"-0"+(ladate.getMonth()+1)
                     }
+                    else{
+                        date = date +"-"+(ladate.getMonth()+1)
+                    }
+                    if(ladate.getDate()+1 < 10){
+                        date = date +"-0"+ladate.getDate()
+                    }
+                    else{
+                        date = date +"-"+ladate.getDate()
+                    }
+                    if(this.code_promo[0] == "anniversaire" && date == this.user_info.date_naissance){
+                        this.code_promo[1] = 25
+                        this.messagePromo("Code promo activé, bon anniversaire =)", "green")
+                        return
+                    }
+                    else if(this.code_promo[0] == code_promo.data[i].code && this.code_promo[0] != "anniversaire"){
+                        this.code_promo[1] = code_promo.data[i].promo
+                        this.messagePromo("Code promo activé =)", "green")
+                        return
+                    }
+                    else{
+                        this.code_promo[1] = 0
+                        this.messagePromo("Ce code promo n'existe pas ou n'est pas disponible =(", "red")
+                    }
+                }
+            },
+            messagePromo(message, color){
+                this.clearMessage()
+                document.querySelector(".paiement--code_promo--message").innerHTML = message
+                document.querySelector(".paiement--code_promo--message").style.color = color
+                document.querySelector(".paiement--code_promo--message").style.display = "block"
+            },
+            messageSize(id_panier, message, color){
+                this.clearMessage()
+                document.querySelector("#size_message_"+id_panier).innerHTML = message
+                document.querySelector("#size_message_"+id_panier).style.color = color
+                document.querySelector("#size_message_"+id_panier).style.display = "block"
+                this.id_message_size = id_panier
+            },
+            messageQuant(id_panier, message, color){
+                this.clearMessage()
+                document.querySelector("#quantite_message_"+id_panier).innerHTML = message
+                document.querySelector("#quantite_message_"+id_panier).style.color = color
+                document.querySelector("#quantite_message_"+id_panier).style.display = "block"
+                this.id_message_quant = id_panier
+            },
+            clearMessage(){
+                document.querySelector(".panier--infos--size--message").style.display = "none"
+                document.querySelector(".paiement--code_promo--message").style.display = "none"
+                if(this.id_message_quant != 0){
+                    document.querySelector("#quantite_message_"+this.id_message_quant).style.display = "none"
+                }
+                if(this.id_message_size != 0){
+                    document.querySelector("#size_message_"+this.id_message_size).style.display = "none"
                 }
             },
             prixPanier(){
                 this.prix_panier = 0;
                 for(let i = 0; i < this.produit_panier.length; i++){
-                    console.log(this.produit_panier[i])
                     this.prix_panier = this.prix_panier + (this.produit_panier[i][5] * (1 - this.produit_panier[i][6]/100)) * this.produit_panier[i][10]
                 }
                 this.prix_panier = this.prix_panier.toFixed(2)
             },
+            openPaiement(){
+                document.querySelector('#container_paiement').style.display = "flex";
+                document.querySelector('body').style.overflow = "hidden"
+            }
         },
         mounted(){
             this.user_info = JSON.parse(localStorage.getItem('user-info'));
@@ -288,6 +409,10 @@
                                 background: var(--main-color);
                             }
                         }
+                    }
+                    &--message{
+                        margin-top: 10px;
+                        display: none;
                     }
                 }
                 &--button{
@@ -370,9 +495,43 @@
                         }
                     }
                     &--size{
-                        font-size: 10px;
-                        padding:10px;
-                        border:solid 1px var(--light_dark);
+                        &--modif{
+                            font-size: 10px;
+                            display: flex;
+                            &--actuel,
+                            &--choix span{
+                                width:35px;
+                                height:35px;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                border:solid 1px var(--light_dark);
+                            }
+                            &--actuel{
+                                margin-right: 25px;
+                            }
+                            &--choix{
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                span{
+                                    border-right-width: 0;
+                                    transition: ease-in-out 0.3s;
+                                    cursor: pointer;
+                                    &:last-child{
+                                        border-right-width: 1px;
+                                    }
+                                    &:hover{
+                                        background: var(--main-color);
+                                    }
+                                }
+                            }
+                        }
+                        &--message{
+                            margin-top: 10px;
+                            font-size: 14px;
+                            display: none;
+                        }
                     }
                     &--quantite{
                         margin: 25px 0;
@@ -401,6 +560,10 @@
                             border-left-width: 0px;
                             border-right-width: 0px;
                         }
+                        &--message{
+                            margin-left: 15px;
+                            font-size:14px;
+                        }
                     }
                     &--delete{
                         background: var(--dark);
@@ -409,7 +572,6 @@
                         padding:20px 25px;
                         border: solid 1px var(--main-color);
                         transition: ease-in-out 0.3s;
-                        
                         &:hover{
                             background: var(--main-color);
                             

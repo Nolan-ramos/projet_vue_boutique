@@ -89,7 +89,8 @@ select:-webkit-autofill:focus {
     transition: background-color 5000s ease-in-out 0s;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator{
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator{
     filter: invert(1);
 }
 

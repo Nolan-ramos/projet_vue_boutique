@@ -33,10 +33,9 @@
       "password": "test",
       "prenom": "test",
       "nom": "test",
-      "date_naissance": "2023-02-03",
       "telephone": null,
       "adresse": "",
-      "ville": "",
+      "ville": "brie",
       "code_postal": "",
       "pays": "",
       "admin": false,
@@ -376,28 +375,17 @@
     },
     {
       "id_user": 3,
-      "id_produit": 3,
-      "size": "XLL",
-<<<<<<< HEAD
-      "nombre": 24,
-=======
-      "nombre": 8,
->>>>>>> 2a015755a5eb09c0be158227f928a0a024943205
-      "id": 15
+      "id_produit": 4,
+      "size": "M",
+      "nombre": 6,
+      "id": 5
     },
     {
       "id_user": 3,
-      "id_produit": 5,
-      "size": "L",
-      "nombre": 1,
-      "id": 16
-    },
-    {
-      "id_user": 3,
-      "id_produit": 1,
-      "size": "XLL",
-      "nombre": 1,
-      "id": 17
+      "id_produit": 4,
+      "size": "XSS",
+      "nombre": 4,
+      "id": 6
     }
   ],
   "favoris": [
@@ -418,13 +406,38 @@
     },
     {
       "id_user": 3,
-      "id_produit": 4,
-      "id": 15
+      "id_produit": 3,
+      "id": 16
     },
     {
       "id_user": 3,
-      "id_produit": 3,
-      "id": 16
+      "id_produit": 5,
+      "id": 17
+    },
+    {
+      "id_user": 3,
+      "id_produit": 4,
+      "id": 18
+    }
+  ],
+  "infos_commandes": [
+    {
+      "id": 1,
+      "num_commande": 158326,
+      "adresse": "31 rue test",
+      "ville": "test",
+      "code_postal": "77170",
+      "pays": "test"
+    }
+  ],
+  "produit_commandes": [
+    {
+      "id": 1,
+      "num_commande": 158326,
+      "id_produit": 1,
+      "id_user": 1,
+      "size": "M",
+      "quantite": 4
     }
   ],
   "code_promo": [
