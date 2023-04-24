@@ -1,6 +1,0 @@
-{
-    "scripts": {
-      "start": "json-server --watch backend/db.json --port 3000"
-    }
-  }
-  
