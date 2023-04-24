@@ -416,8 +416,13 @@
     },
     {
       "id_user": 3,
+      "id_produit": 4,
+      "id": 22
+    },
+    {
+      "id_user": 3,
       "id_produit": 2,
-      "id": 20
+      "id": 23
     }
   ],
   "infos_commandes": [
